@@ -1,5 +1,5 @@
 // controllers/userController.js
-const User = require("./models/User.js");
+const User = require("../models/User.js");
 // Ajouter un utilisateur (admin uniquement)
 exports.ajouterUtilisateur = async (req, res) => {
   try {
