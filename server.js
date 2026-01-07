@@ -19,7 +19,8 @@ connectDB();
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/reservations", require("./routes/reservationRoutes"));
-
+app.use("/api/paiement", require("./routes/paiementRoutes"));
+app.use("/api/enfant", require("./routes/enfantRoutes"));
 // Lancer le serveur
 const PORT = process.env.PORT || 5000;
 
