@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
     nom: String,
     prenom: String,
     email: { type: String, unique: true, required: true },
-    mdp: String,
+    mdp: { type: String, required: true },
     role: {
       type: String,
       enum: ["admin", "Parent", "BabySitter"],
@@ -13,9 +13,10 @@ const userSchema = new mongoose.Schema(
     adresse: {
       type: String,
       required: function () {
+        console.log("Role in adresse validation:", this.role);
         return this.role === "Parent";
       },
-    },
+    },    
     qualifications: {
       type: String,
       required: function () {
