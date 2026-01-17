@@ -8,13 +8,13 @@ const authorize = require("../middleware/roleMiddleware");
 router.post("/ajouter", protect, authorize(["admin", "Parent"]),reservationController.ajouterReservation);
 
 // lister réservations
-router.get("/",protect,protect,authorize(["admin"]), reservationController.listerReservations);
+router.get("/",protect,authorize(["admin"]), reservationController.listerReservations);
 
 // Modifier une réservation par id
-router.put("/modifier/:id", protect,authorize(["admin","Parent"]),reservationController.modifierReservation);
+router.put("/modifier/:id",reservationController.modifierReservation);
 
 // Supprimer une réservation par id
-router.delete("/supprimer/:id",protect,authorize(["admin"]), reservationController.supprimerReservation);
+router.delete("/supprimer/:id", reservationController.supprimerReservation);
 
 
 module.exports = router;

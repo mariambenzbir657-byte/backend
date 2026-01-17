@@ -8,15 +8,15 @@ const authorize = require("../middleware/roleMiddleware");
 router.post("/ajouter",  protect,authorize(["Parent"]),enfantController.ajouterEnfant);
 
 // 📄 Lister enfants
-router.get("/",  protect,authorize(["Parent"]),enfantController.listerEnfants);
+router.get("/",enfantController.listerEnfants);
 
 // 🔍 Get enfant by ID
 router.get("/:id", enfantController.getEnfantById);
 
 // ✏️ Modifier enfant
-router.put("/:id", protect,authorize(["Parent"]), enfantController.modifierEnfant);
+router.put("/:id",enfantController.modifierEnfant);
 
 // ❌ Supprimer enfant
-router.delete("/:id", protect,authorize(["Parent"]), enfantController.supprimerEnfant);
+router.delete("/:id",enfantController.supprimerEnfant);
 
 module.exports = router;

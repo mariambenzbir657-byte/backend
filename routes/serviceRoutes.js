@@ -11,19 +11,9 @@ router.post("/ajouter", protect, authorize(["babySitter"]), serviceController.aj
 router.get("/", serviceController.getAllServices);
 
 // Get services d’un babysitter (babySitter seulement)
-router.get(
-  "/babysitter/:id",
-  protect,
-  authorize(["babySitter"]),
-  serviceController.getServicesByBabySitter
-);
+router.get("/babysitter/:id",protect,authorize(["babySitter"]),serviceController.getServicesByBabySitter);
 
 // Delete service (babySitter seulement)
-router.delete(
-  "/:id",
-  protect,
-  authorize(["babySitter"]),
-  serviceController.deleteService
-);
+router.delete("/:id",serviceController.deleteService);
 
 module.exports = router;

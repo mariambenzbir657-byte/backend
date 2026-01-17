@@ -12,7 +12,7 @@ exports.ajouterUtilisateur = async (req, res) => {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
-    const { nom, prenom, email, mdp, role,adresse } = req.body;
+    const { nom, prenom, email, mdp, role,adresse,qualifications,estVerifie,disponibilites } = req.body;
 
     // Vérifier si email existe déjà
     const existUser = await User.findOne({ email });
@@ -30,6 +30,9 @@ exports.ajouterUtilisateur = async (req, res) => {
       mdp: hashedmdp,
       role,
       adresse,
+      qualifications,
+      estVerifie,
+      disponibilites,
       image: req.file ? req.file.filename : null, // 📸 image (comme Cour)
     });
 
