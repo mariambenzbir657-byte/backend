@@ -3,14 +3,17 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-
+const  path = require("path");
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(express.json()); // lire le body JSON
-app.use(cors()); // autoriser les requêtes externes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Static folder for images
+app.use("/uploads", express.static(path.join(path.resolve(), "/uploads")));
 
 // Connexion BDD
 connectDB();

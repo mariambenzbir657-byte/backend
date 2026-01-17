@@ -37,8 +37,11 @@ const userSchema = new mongoose.Schema(
         return this.role === "BabySitter";
       },
     },
+    image: {
+      type: String,
+      default: null,
+    },
   },
-  image:String,
   { timestamps: true }
 );
 

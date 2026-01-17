@@ -3,20 +3,34 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const protect = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
-const upload=require("../middleware/upload");
-// ➕ Ajouter utilisateur (admin seulement)
-router.post("/ajouter",protect,authorize(["admin"]),upload.imageuserController.ajouterUtilisateur);
+const upload = require("../middleware/upload");
 
-// 🔐 Login (public)
+// 🔹 PUBLIC ADD USER (form-data + image)
+router.post(
+  "/ajouter-public",
+  upload.single("image"),
+  userController.ajouterUtilisateur
+);
+
+// 🔹 LOGIN
 router.post("/login", userController.login);
 
-// 📋 Lister utilisateurs (admin seulement)
-router.get("/",protect,authorize(["admin"]),userController.listerUtilisateurs);
+// 🔹 PROTECTED ADD USER (admin only)
+router.post(
+  "/ajouter-protected",
+  protect,
+  authorize(["admin","Parent"]),
+  upload.single("image"),
+  userController.ajouterUtilisateur
+);
 
-// ❌ Supprimer utilisateur (admin ou parent)
-router.delete("/:id",protect,authorize(["admin", "parent"]),userController.deleteUser);
+// 🔹 LIST USERS (protected admin)
+router.get("/", protect, authorize(["admin"]), userController.listerUtilisateurs);
 
-// ✏️ Modifier utilisateur (admin ou propriétaire)
-router.put("/modifier/:id",protect,authorize(["admin", "parent", "babySitter"]),userController.updateUser);
+// 🔹 DELETE USER (protected admin)
+router.delete("/:id", protect, authorize(["admin"]), userController.deleteUser);
+
+// 🔹 UPDATE USER (protected admin ou owner)
+router.put("/modifier/:id", protect, authorize(["admin", "Parent", "Babysitter"]), userController.updateUser);
 
 module.exports = router;
