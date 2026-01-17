@@ -12,11 +12,11 @@ exports.ajouterUtilisateur = async (req, res) => {
     }
 
     // 🔐 hash du mot de passe
-    const hashedPassword = await bcrypt.hash(mdp, 10);
+    const hashedmdp = await bcrypt.hash(mdp, 10);
 
     const nouvelUser = new User({
       ...req.body,
-      mdp: hashedPassword,
+      mdp: hashedmdp,
     });
 
     await nouvelUser.save();
@@ -64,5 +64,59 @@ exports.listerUtilisateurs = async (req, res) => {
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+/**
+ * Mettre à jour un utilisateur
+ * Admin OU utilisateur lui-même
+ */
+exports.updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    /*// Vérification des permissions
+    if (req.user.role !== "admin" && req.user.id !== userId) {
+      return res.status(403).json({ message: "Accès refusé" });
+    }*/
+ 
+    const updates = req.body;
+
+    // Si mot de passe modifié → hash obligatoire
+    if (updates.mdp) {
+      updates.mdp = await bcrypt.hash(updates.mdp, 10);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    }).select("-mdp");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Supprimer un utilisateur
+ * Admin uniquement
+ */
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
+
+    res.json({ message: "Utilisateur supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

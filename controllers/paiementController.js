@@ -28,3 +28,36 @@ exports.listerPaiements = async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la récupération des paiements", error });
   }
 };
+// Modifier un paiement
+exports.modifierPaiement = async (req, res) => {
+  try {
+    const paiementId = req.params.id;
+    const dataUpdate = req.body;
+
+    const paiementModifie = await Paiement.findByIdAndUpdate(paiementId, dataUpdate, { new: true });
+
+    if (!paiementModifie) {
+      return res.status(404).json({ message: "Paiement non trouvé" });
+    }
+
+    res.status(200).json(paiementModifie);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors de la modification", error: err.message });
+  }
+};
+
+// Supprimer un paiement
+exports.supprimerPaiement = async (req, res) => {
+  try {
+    const paiementId = req.params.id;
+    const paiementSupprime = await Paiement.findByIdAndDelete(paiementId);
+
+    if (!paiementSupprime) {
+      return res.status(404).json({ message: "Paiement non trouvé" });
+    }
+
+    res.status(200).json({ message: "Paiement supprimé avec succès" });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors de la suppression", error: err.message });
+  }
+};

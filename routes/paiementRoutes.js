@@ -1,11 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const paiementController = require("../controllers/paiementController");
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 
-// Ajouter un paiement
-router.post("/ajouter", paiementController.ajouterPaiement);
+// ➕ Ajoute paiement (parent seulement)
+router.post("/ajouter",protect,authorize(["parent"]),paiementController.ajouterPaiement);
 
-// Lister tous les paiements
-router.get("/", paiementController.listerPaiements);
+//  Lister paiements (admin seulement)
+router.get("/",protect,authorize(["admin"]),paiementController.listerPaiements);
+
+// ✏️ Modifier paiement (admin seulement)
+router.put("/modifier/:id",protect,authorize(["admin"]),paiementController.modifierPaiement);
+
+// ❌ Supprimer paiement (admin seulement)
+router.delete("/supprimer/:id", protect,authorize(["admin"]),paiementController.supprimerPaiement);
 
 module.exports = router;

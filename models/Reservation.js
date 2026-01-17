@@ -4,27 +4,32 @@ const reservationSchema = new mongoose.Schema(
   {
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: "Parent",
+      required: true
     },
     babySitterId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: "BabySitter",
+      required: true
+    },
+    serviceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      required: true
     },
     dateHeureDebut: {
       type: Date,
-      required: true,
+      required: true
     },
     dateHeureFin: {
       type: Date,
-      required: true,
+      required: true
     },
     statut: {
       type: String,
-      enum: ["en attente", "confirmée", "annulée"],
-      default: "en attente",
-    },
+      enum: ["en attente", "confirmee", "annulee"],
+      default: "en attente"
+    }
   },
   { timestamps: true }
 );

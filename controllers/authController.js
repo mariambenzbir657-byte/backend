@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   const { nom, email, mdp } = req.body;
-  
+
   try {
     const userExiste = await User.findOne({ email });
     if (userExiste) {
@@ -17,48 +17,45 @@ exports.register = async (req, res) => {
     await User.create({
       nom,
       email,
-      mdp: hashedPassword
+      mdp: hashedPassword,
     });
 
     res.status(201).json({ message: "Inscription réussie" });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 /*login*/
 exports.login = async (req, res) => {
-    const { email, mdp } = req.body;
-  
-    try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: "Identifiants invalides" });
-      }
-  
-      const isMatch = await bcrypt.compare(mdp, user.mdp);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Identifiants invalides" });
-      }
-  
-      const token = jwt.sign(
-        { id: user._id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: "1j" }
-      );
-  
-      res.json({
-        token,
-        user: {
-          id: user._id,
-          nom: user.nom,
-          email: user.email,
-          role: user.role
-        }
-      });
-  
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+  const { email, mdp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Identifiants invalides" });
     }
+
+    const isMatch = await bcrypt.compare(mdp, user.mdp);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Identifiants invalides" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        nom: user.nom,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
-  
