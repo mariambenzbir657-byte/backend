@@ -19,6 +19,7 @@ router.get(
   (req, res) => {
     res.json({ message: "Espace administrateur" });
   }
+  
 );
 // test route
 router.get("/test", (req, res) => {

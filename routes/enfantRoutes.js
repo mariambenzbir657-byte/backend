@@ -5,18 +5,18 @@ const protect = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
 
 // ➕ Ajouter enfant
-router.post("/ajouter",  protect,authorize(["Parent"]),enfantController.ajouterEnfant);
+router.post("/ajouter",protect,authorize(["Parent"]),enfantController.ajouterEnfant);
 
 // 📄 Lister enfants
-router.get("/",enfantController.listerEnfants);
+router.get("/",protect,authorize(["Parent"]),enfantController.listerEnfants);
 
 // 🔍 Get enfant by ID
-router.get("/:id", enfantController.getEnfantById);
+router.get("/:id",protect,authorize(["Parent"]), enfantController.getEnfantById);
 
 // ✏️ Modifier enfant
-router.put("/:id",enfantController.modifierEnfant);
+router.put("/:id",protect,authorize(["Parent"]),enfantController.modifierEnfant);
 
 // ❌ Supprimer enfant
-router.delete("/:id",enfantController.supprimerEnfant);
+router.delete("/:id",protect,authorize(["Parent"]),enfantController.supprimerEnfant);
 
 module.exports = router;

@@ -11,10 +11,10 @@ router.post("/ajouter", protect, authorize(["admin", "Parent"]),reservationContr
 router.get("/",protect,authorize(["admin"]), reservationController.listerReservations);
 
 // Modifier une réservation par id
-router.put("/modifier/:id",reservationController.modifierReservation);
+router.put("/modifier/:id",protect,reservationController.modifierReservation);
 
 // Supprimer une réservation par id
-router.delete("/supprimer/:id", reservationController.supprimerReservation);
+router.delete("/supprimer/:id",protect,authorize(["Admin"]),reservationController.supprimerReservation);
 
 
 module.exports = router;

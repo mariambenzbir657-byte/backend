@@ -11,12 +11,12 @@ router.post("/ajouter",upload.single("image"),userController.ajouterUtilisateur)
 router.post("/login", userController.login);
 
 // 🔹 LIST USERS (protected admin)
-router.get("/", protect, authorize(["admin", "Parent", "Babysitter"]), userController.listerUtilisateurs);
+router.get("/", protect, authorize(["admin"]), userController.listerUtilisateurs);
 
 // 🔹 DELETE USER (protected admin)
-router.delete("/:id", userController.deleteUser);
+router.delete("/:id",protect, authorize(["admin"]), userController.deleteUser);
 
 // 🔹 UPDATE USER (protected admin ou owner)
-router.put("/modifier/:id", userController.updateUser);
-
+router.put("/modifier/:id",protect,userController.updateUser);
+  
 module.exports = router;
