@@ -5,15 +5,15 @@ const protect = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
 
 // ➕ Ajoute paiement (parent seulement)
-router.post("/ajouter",protect,authorize(["parent"]),paiementController.ajouterPaiement);
+router.post("/ajouter",protect,authorize(["Parent"]),paiementController.ajouterPaiement);
 
 //  Lister paiements (admin seulement)
-router.get("/",protect,authorize(["Admin"]),paiementController.listerPaiements);
+router.get("/",protect,authorize(["Admin","Parent"]),paiementController.listerPaiements);
 
 // ✏️ Modifier paiement (admin seulement)
-router.put("/modifier/:id",protect,authorize(["Admin"]),paiementController.modifierPaiement);
+router.put("/modifier/:id",protect,authorize(["Admin","Parent"]),paiementController.modifierPaiement);
 
 // ❌ Supprimer paiement (admin seulement)
-router.delete("/supprimer/:id",protect,authorize(["Admin"]),paiementController.supprimerPaiement);
+router.delete("/supprimer/:id",protect,authorize(["Admin","Parent"]),paiementController.supprimerPaiement);
 
 module.exports = router;

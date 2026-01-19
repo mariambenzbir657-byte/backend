@@ -7,7 +7,7 @@ const enfantSchema = new mongoose.Schema(
     allergies: String,
     besoinsSpeciaux: String,
 
-    parent: {
+    parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true

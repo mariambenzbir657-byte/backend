@@ -95,25 +95,24 @@ exports.listerUtilisateurs = async (req, res) => {
 /**
  * ✏️ Mettre à jour un utilisateur
  */
-exports.updateUser = async (req, res) => {
+ exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const updates = req.body;
+    const updates = req.body || {};
 
-    // Si mot de passe changé → hash
     if (updates.mdp) {
       updates.mdp = await bcrypt.hash(updates.mdp, 10);
     }
 
-    // Si image changée
     if (req.file) {
       updates.image = req.file.filename;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
-      new: true,
-      runValidators: true,
-    }).select("-mdp");
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updates,
+      { new: true, runValidators: true }
+    ).select("-mdp");
 
     if (!updatedUser) {
       return res.status(404).json({ message: "Utilisateur introuvable" });
@@ -124,6 +123,7 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /**
  * 🗑️ Supprimer un utilisateur (admin)
