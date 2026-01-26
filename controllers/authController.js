@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
-  const { nom, email, mdp } = req.body;
+  const { nom, prenom, email, mdp, role, adresse, qualifications, estVerifie, disponibilites } = req.body;
 
   try {
     const userExiste = await User.findOne({ email });
@@ -16,15 +16,23 @@ exports.register = async (req, res) => {
 
     await User.create({
       nom,
+      prenom,
       email,
       mdp: hashedPassword,
+      role: role || "Parent",
+      adresse: adresse || (role === "Parent" ? "" : undefined),
+      qualifications: qualifications || (role === "BabySitter" ? "" : undefined),
+      estVerifie: estVerifie || (role === "BabySitter" ? false : undefined),
+      disponibilites: disponibilites || (role === "BabySitter" ? "" : undefined),
     });
 
     res.status(201).json({ message: "Inscription réussie" });
   } catch (error) {
+    console.error("Erreur registre:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 /*login*/
 exports.login = async (req, res) => {
   const { email, mdp } = req.body;
