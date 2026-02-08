@@ -4,12 +4,12 @@ const reservationSchema = new mongoose.Schema(
   {
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Parent",
+      ref: "User",
       required: true
     },
     babySitterId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "BabySitter",
+      ref: "User",
       required: true
     },
     serviceId: {

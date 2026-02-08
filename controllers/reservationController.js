@@ -3,16 +3,27 @@ const Reservation = require("../models/Reservation");
 // ➕ Ajouter réservation
 exports.ajouterReservation = async (req, res) => {
   try {
-    const reservation = new Reservation(req.body);
+    const parentId = req.user._id; // user connecté via middleware auth
+    const { babySitterId, serviceId, dateHeureDebut, dateHeureFin } = req.body;
+
+    const reservation = new Reservation({
+      parentId,
+      babySitterId,
+      serviceId,
+      dateHeureDebut,
+      dateHeureFin,
+      statut:"en attente"
+    });
+
     await reservation.save();
     res.status(201).json({
       message: "Réservation ajoutée avec succès",
-      reservation
+      reservation,
     });
   } catch (err) {
     res.status(400).json({
       message: "Erreur lors de l'ajout de la réservation",
-      error: err.message
+      error: err.message,
     });
   }
 };
@@ -28,30 +39,11 @@ exports.listerReservations = async (req, res) => {
     res.status(200).json(reservations);
   } catch (err) {
     res.status(500).json({
-      message: "Erreur lors de la récupération des réservations",
-      error: err.message
+      message: "",
+      error: err.message,
     });
   }
 };
-
-// 👶 Lister réservations d’un babysitter
-exports.reservationsParBabySitter = async (req, res) => {
-  try {
-    const reservations = await Reservation.find({
-      babySitterId: req.params.id
-    })
-      .populate("parentId", "nom email")
-      .populate("serviceId", "typeService prixParHeure");
-
-    res.status(200).json(reservations);
-  } catch (err) {
-    res.status(500).json({
-      message: "Erreur lors de la récupération",
-      error: err.message
-    });
-  }
-};
-
 // ✏️ Modifier statut réservation
 exports.modifierReservation = async (req, res) => {
   try {
@@ -67,12 +59,12 @@ exports.modifierReservation = async (req, res) => {
 
     res.status(200).json({
       message: "Réservation modifiée",
-      reservation
+      reservation,
     });
   } catch (err) {
     res.status(400).json({
       message: "Erreur lors de la modification",
-      error: err.message
+      error: err.message,
     });
   }
 };
@@ -90,7 +82,7 @@ exports.supprimerReservation = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Erreur lors de la suppression",
-      error: err.message
+      error: err.message,
     });
   }
 };

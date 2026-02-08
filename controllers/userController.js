@@ -58,12 +58,13 @@ exports.ajouterUtilisateur = async (req, res) => {
     const { email, mdp } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur introuvable" });
 
     const isMatch = await bcrypt.compare(mdp, user.mdp);
-    if (!isMatch) return res.status(401).json({ message: "Mot de passe incorrect" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Mot de passe incorrect" });
 
-    // 🔑token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -72,20 +73,39 @@ exports.ajouterUtilisateur = async (req, res) => {
 
     res.status(200).json({
       message: "Login réussi",
-      token, 
-      role: user.role
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role
+      }
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+
 /**
  * 📄 Récupérer tous les utilisateurs
  */
-exports.listerUtilisateurs = async (req, res) => {
+ exports.listerUtilisateurs = async (req, res) => {
   try {
-    const users = await User.find().select("-mdp");
+    const { search, role } = req.query;
+
+    let query = {};
+    if (role) {
+      query.role = { $regex: `^${role}$`, $options: "i" }; 
+    }
+
+    if (search) {
+      query.$or = [
+        { nom: { $regex: search, $options: "i" } },
+        { prenom: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const users = await User.find(query).select("-mdp");
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -97,33 +117,31 @@ exports.listerUtilisateurs = async (req, res) => {
  */
  exports.updateUser = async (req, res) => {
   try {
-    const userId = req.params.id;
-    const updates = req.body || {};
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
-    if (updates.mdp) {
-      updates.mdp = await bcrypt.hash(updates.mdp, 10);
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
+    // update normal fields
+    Object.keys(req.body).forEach((key) => {
+      user[key] = req.body[key];
+    });
+
+    // update image only if new one uploaded
     if (req.file) {
-      updates.image = req.file.filename;
+      user.image = req.file.filename;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updates,
-      { new: true, runValidators: true }
-    ).select("-mdp");
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "Utilisateur introuvable" });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error("UPDATE ERROR:", err);
+    res.status(500).json({ message: "Update failed", error: err.message });
   }
 };
-
 
 /**
  * 🗑️ Supprimer un utilisateur (admin)

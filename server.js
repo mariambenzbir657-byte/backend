@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const path = require("path");
 
 dotenv.config();
+console.log("API KEY =", process.env.OPENAI_API_KEY);
 
 const app = express();
 
@@ -28,6 +29,10 @@ app.use("/api/paiement", require("./routes/paiementRoutes"));
 app.use("/api/enfant", require("./routes/enfantRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/services", require("./routes/serviceRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/messages", require("./routes/messageRoutes"));
+const chatRouter = require("./routes/chatRoutes");
+app.use("/api/chat", chatRouter);
 
 // Test route
 app.get("/test", (req, res) => {

@@ -5,10 +5,10 @@ const protect = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
 
 // ajouter réservation
-router.post("/ajouter", protect, authorize(["admin", "Parent"]),reservationController.ajouterReservation);
+router.post("/ajouter",reservationController.ajouterReservation);
 
 // lister réservations
-router.get("/",protect,authorize(["admin"]), reservationController.listerReservations);
+router.get("/",reservationController.listerReservations);
 
 // Modifier une réservation par id
 router.put("/modifier/:id",protect,reservationController.modifierReservation);
