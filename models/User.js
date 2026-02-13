@@ -11,11 +11,7 @@ const userSchema = new mongoose.Schema(
       default: "Parent",
     },
     adresse: {
-      type: String,
-      required: function () {
-        console.log("Role in adresse validation:", this.role);
-        return this.role === "Parent";
-      },
+      type: String , required:true
     },    
     qualifications: {
       type: String,

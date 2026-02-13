@@ -32,7 +32,7 @@ app.use("/api/services", require("./routes/serviceRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 const chatRouter = require("./routes/chatRoutes");
-app.use("/api/chat", chatRouter);
+app.use("/api", chatRouter);
 
 // Test route
 app.get("/test", (req, res) => {
@@ -49,4 +49,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
 });
-

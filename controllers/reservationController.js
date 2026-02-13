@@ -3,18 +3,17 @@ const Reservation = require("../models/Reservation");
 // ➕ Ajouter réservation
 exports.ajouterReservation = async (req, res) => {
   try {
-    const parentId = req.user._id; // user connecté via middleware auth
-    const { babySitterId, serviceId, dateHeureDebut, dateHeureFin } = req.body;
-
+    const { parentId, babySitterId, serviceId, dateHeureDebut, dateHeureFin } = req.body;
     const reservation = new Reservation({
       parentId,
       babySitterId,
       serviceId,
       dateHeureDebut,
       dateHeureFin,
-      statut:"en attente"
+      statut: "en attente"
     });
 
+    
     await reservation.save();
     res.status(201).json({
       message: "Réservation ajoutée avec succès",

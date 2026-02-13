@@ -25,20 +25,17 @@ exports.getAllServices = async (req, res) => {
   }
 };
 
-// 📄 Get services by babysitter (owner ou admin)
+// 📄 Get services by babysitter (public)
 exports.getServicesByBabySitter = async (req, res) => {
   try {
-    // Ownership check
-    if (req.user.role !== "Admin" && req.user.id !== req.params.id) {
-      return res.status(403).json({ message: "Accès refusé" });
-    }
-
-    const services = await Service.find({ idBabySitter: req.params.id });
+    const services = await Service.find({ idBabySitter: req.params.id }).populate("idBabySitter");
     res.json(services);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error); 
+    res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
+
 
 // ✏️ Update service (owner ou admin)
 exports.updateService = async (req, res) => {

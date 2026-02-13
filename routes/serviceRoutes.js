@@ -11,7 +11,7 @@ router.post("/ajouter",protect,authorize(["BabySitter"]),serviceController.ajout
 router.get("/", serviceController.getAllServices);
 
 // 📄 Get services d’un babysitter (owner ou admin)
-router.get("/babysitter/:id",protect,authorize(["BabySitter", "Admin"]),serviceController.getServicesByBabySitter);
+router.get("/babysitter/:id",serviceController.getServicesByBabySitter);
 
 // ✏️ Modifier service (owner ou admin)
 router.put("/modifier/:id",protect,authorize(["BabySitter", "Admin"]),serviceController.updateService);

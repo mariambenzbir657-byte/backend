@@ -19,4 +19,6 @@ router.delete("/:id",protect, authorize(["admin","Parent","BabySitter"]),userCon
 // 🔹 UPDATE USER (protected admin ou owner)
 router.put("/modifier/:id",upload.single("image"),userController.updateUser);
 
+router.get("/:id", userController.getUserById);
+
 module.exports = router;

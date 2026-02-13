@@ -125,18 +125,29 @@ exports.ajouterUtilisateur = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // update normal fields
+    if (req.body.mdp) {
+      const hashedPassword = await bcrypt.hash(req.body.mdp, 10);
+      user.mdp = hashedPassword;
+    }
+
+  
     Object.keys(req.body).forEach((key) => {
-      user[key] = req.body[key];
+      if (key !== "mdp") {
+        user[key] = req.body[key];
+      }
     });
 
-    // update image only if new one uploaded
+    // update image
     if (req.file) {
       user.image = req.file.filename;
     }
 
     await user.save();
-    res.json(user);
+
+    res.json({
+      message: "Utilisateur modifié avec succès",
+      user,
+    });
   } catch (err) {
     console.error("UPDATE ERROR:", err);
     res.status(500).json({ message: "Update failed", error: err.message });
@@ -158,5 +169,17 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: "Utilisateur supprimé avec succès" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+/**
+ * 📄 Récupérer un utilisateur par ID
+ */
+ exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-mdp");
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
