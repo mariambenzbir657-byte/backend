@@ -16,5 +16,6 @@ router.put("/modifier/:id",protect,reservationController.modifierReservation);
 // Supprimer une réservation par id
 router.delete("/supprimer/:id",protect,authorize(["Admin","Parent"]),reservationController.supprimerReservation);
 
+router.get("/parent/:parentId", reservationController.getBabysittersForParent);
 
 module.exports = router;

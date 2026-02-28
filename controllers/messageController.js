@@ -1,49 +1,54 @@
-// routes/messageRoutes.js
-const express = require("express");
-const router = express.Router();
 const Message = require("../models/Message");
+const User = require("../models/User");
 
-// ➕ Send message
-router.post("/", async (req, res) => {
+// Envoyer un message
+exports.envoyerMessage = async (req, res) => {
   try {
-    const { parentId, babysitterId, content } = req.body;
+    const { senderId, receiverId, content } = req.body;
+    if (!senderId || !receiverId || !content) {
+      return res.status(400).json({ message: "Tous les champs sont requis." });
+    }
 
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById(receiverId);
+    if (!sender || !receiver) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    // Vérifier rôle parent ↔ babysitter
+    if (
+      (sender.role === "parent" && receiver.role !== "babysitter") ||
+      (sender.role === "babysitter" && receiver.role !== "parent")
+    ) {
+      return res.status(403).json({ message: "Impossible d'envoyer le message" });
+    }
+
+    // Créer conversationId unique
     const conversationId =
-      parentId < babysitterId
-        ? `${parentId}_${babysitterId}`
-        : `${babysitterId}_${parentId}`;
+      senderId < receiverId ? `${senderId}_${receiverId}` : `${receiverId}_${senderId}`;
 
     const message = new Message({
-      parenntId,
-      babysitterId,
+      parentId: sender.role === "parent" ? senderId : receiverId,
+      babysitterId: sender.role === "babysitter" ? senderId : receiverId,
       content,
       conversationId,
     });
 
     await message.save();
     res.status(201).json(message);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
-});
+};
 
-// 📥 Get messages between parent & babysitter
-router.get("/:user1/:user2", async (req, res) => {
+// Récupérer les messages d'une conversation
+exports.getConversation = async (req, res) => {
   try {
-    const { user1, user2 } = req.params;
+    const { parentId, babysitterId } = req.params;
 
-    const conversationId =
-      user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
-
-    const messages = await Message.find({ conversationId })
-      .populate("parenntId", "name role")
-      .populate("babysitterId", "name role")
-      .sort({ createdAt: 1 });
-
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const messages = await Message.find({ parentId, babysitterId }).sort({ createdAt: 1 });
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
-});
-
-module.exports = router;
+};
