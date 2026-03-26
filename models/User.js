@@ -11,8 +11,9 @@ const userSchema = new mongoose.Schema(
       default: "Parent",
     },
     adresse: {
-      type: String , required:true
-    },    
+      type: String,
+      required: true,
+    },
     qualifications: {
       type: String,
       required: function () {

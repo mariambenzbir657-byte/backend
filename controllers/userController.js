@@ -7,20 +7,29 @@ const jwt = require("jsonwebtoken");
 /**
  * ➕ Ajouter un utilisateur (admin)
  */
-exports.ajouterUtilisateur = async (req, res) => {
+ exports.ajouterUtilisateur = async (req, res) => {
   try {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
-    const { nom, prenom, email, mdp, role,adresse,qualifications,estVerifie,disponibilites } = req.body;
+    const {
+      nom,
+      prenom,
+      email,
+      mdp,
+      role,
+      adresse,
+      qualifications,
+      disponibilites,
+    } = req.body;
 
-    // Vérifier si email existe déjà
+    const estVerifie = req.body.estVerifie === "true" || req.body.estVerifie === true;
+
     const existUser = await User.findOne({ email });
     if (existUser) {
       return res.status(400).json({ message: "Email déjà utilisé" });
     }
 
-    // Hash mot de passe
     const hashedmdp = await bcrypt.hash(mdp, 10);
 
     const nouvelUser = new User({
@@ -33,7 +42,7 @@ exports.ajouterUtilisateur = async (req, res) => {
       qualifications,
       estVerifie,
       disponibilites,
-      image: req.file ? req.file.filename : null, // 📸 image (comme Cour)
+      image: req.file ? req.file.filename : null,
     });
 
     await nouvelUser.save();
@@ -43,7 +52,8 @@ exports.ajouterUtilisateur = async (req, res) => {
       user: nouvelUser,
     });
   } catch (err) {
-    res.status(400).json({
+    console.error("AJOUT ERROR:", err);
+    res.status(500).json({
       message: "Erreur d’ajout",
       error: err.message,
     });

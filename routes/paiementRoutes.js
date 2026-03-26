@@ -1,19 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const paiementController = require("../controllers/paiementController");
-const protect = require("../middleware/authMiddleware");
-const authorize = require("../middleware/roleMiddleware");
 
-// ➕ Ajoute paiement (parent seulement)
-router.post("/ajouter",protect,authorize(["Parent"]),paiementController.ajouterPaiement);
+// ➕ ajouter
+router.post("/ajouter", paiementController.ajouterPaiement);
 
-//  Lister paiements (admin seulement)
-router.get("/",protect,authorize(["Admin","Parent"]),paiementController.listerPaiements);
+// 📋 lister
+router.get("/", paiementController.listerPaiements);
 
-// ✏️ Modifier paiement (admin seulement)
-router.put("/modifier/:id",protect,authorize(["Admin","Parent"]),paiementController.modifierPaiement);
+// ✅ by paiementId
+router.get("/by-id/:id", paiementController.getPaiementById);
 
-// ❌ Supprimer paiement (admin seulement)
-router.delete("/supprimer/:id",protect,authorize(["Admin","Parent"]),paiementController.supprimerPaiement);
+// ✅ by reservationId
+router.get("/by-reservation/:id", paiementController.getPaiementByReservation);
+
+// ✏️ modifier
+router.put("/modifier/:id", paiementController.modifierPaiement);
+// ❌ supprimer
+router.delete("/supprimer/:id", paiementController.supprimerPaiement);
+router.post("/payer/:id", paiementController.payerPaiement);
 
 module.exports = router;

@@ -19,6 +19,12 @@ const paiementSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  statut: {
+    type: String,
+    enum: ["payé", "non payé"],
+    default: "non payé",
+    required: true,
+  },
 });
 
 module.exports = mongoose.models.Paiement || mongoose.model("Paiement", paiementSchema);

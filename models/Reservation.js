@@ -29,6 +29,11 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       enum: ["en attente", "confirmee", "annulee"],
       default: "en attente"
+    },
+    enfantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Enfant",
+      required: true
     }
   },
   { timestamps: true }

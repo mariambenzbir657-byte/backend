@@ -1,4 +1,3 @@
-// models/Message.js
 const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema(
@@ -16,11 +15,11 @@ const messageSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
-      trim: true,
     },
-    conversationId: {
+    senderRole: {
       type: String,
-      required: true, // parentId_babysitterId
+      enum: ["Parent", "Babysitter"],
+      required: true,
     },
   },
   { timestamps: true }
