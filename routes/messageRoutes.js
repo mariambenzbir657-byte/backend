@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const messageController = require("../controllers/messageController");
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 
-// جلب الرسائل بين parent و babysitter
-router.get("/:parentId/:babysitterId", messageController.getMessages);
+router.get("/:parentId/:babysitterId",protect,authorize(["Parent","BabySitter"]) ,messageController.getMessages);
 
-// إرسال رسالة
-router.post("/envoyer", messageController.sendMessage);
+router.post("/envoyer",protect,authorize(["Parent","BabySitter"]), messageController.sendMessage);
 
 module.exports = router;

@@ -11,7 +11,6 @@ exports.ajouterPaiement = async (req, res) => {
       return res.status(400).json({ message: "Données manquantes" });
     }
 
-    // 🔹 نتأكد ما فماش paiement déjà
     const exist = await Paiement.findOne({ reservationId });
     if (exist) {
       return res.status(200).json(exist);
@@ -71,7 +70,7 @@ exports.getPaiementById = async (req, res) => {
 };
 
 
-// ✅ GET paiement par reservationId (🔴 FIX هنا)
+// ✅ GET paiement par reservationId
 exports.getPaiementByReservation = async (req, res) => {
   try {
     const reservationId = req.params.id;
@@ -84,7 +83,6 @@ exports.getPaiementByReservation = async (req, res) => {
       reservationId: new mongoose.Types.ObjectId(reservationId),
     });
 
-    // 🔥 FIX: ما نرجعوش fake data
     if (!paiement) {
       return res.status(404).json({ message: "Paiement non trouvé" });
     }
@@ -145,7 +143,7 @@ exports.supprimerPaiement = async (req, res) => {
 };
 
 
-// 💳 Payer paiement (🔹 أهم function)
+// 💳 Payer paiement 
 exports.payerPaiement = async (req, res) => {
   try {
     const paiementId = req.params.id;
@@ -156,7 +154,6 @@ exports.payerPaiement = async (req, res) => {
       return res.status(404).json({ message: "Paiement introuvable" });
     }
 
-    // 🔹 إذا déjà payé ما نعاودوش
     if (paiement.statut === "payé") {
       return res.status(200).json(paiement);
     }

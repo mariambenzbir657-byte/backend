@@ -6,19 +6,19 @@ const authorize = require("../middleware/roleMiddleware");
 const upload = require("../middleware/upload");
 
 // 🔹 PUBLIC ADD USER (form-data + image)
-router.post("/ajouter",upload.single("image"),userController.ajouterUtilisateur);
+router.post("/ajouter",upload.single("image"),protect,authorize(["Parent","BabySitter"]),userController.ajouterUtilisateur);
 // 🔹 LOGIN
-router.post("/login", userController.login);
+router.post("/login", protect,authorize(["Parent","BabySitter"]),userController.login);
 
 // 🔹 LIST USERS (protected admin)
-router.get("/", userController.listerUtilisateurs);
+router.get("/", protect,authorize(["admin","Parent","BabySitter"]),userController.listerUtilisateurs);
 
 // 🔹 DELETE USER (protected admin)
 router.delete("/:id",protect, authorize(["admin","Parent","BabySitter"]),userController.deleteUser);
 
 // 🔹 UPDATE USER (protected admin ou owner)
-router.put("/modifier/:id",upload.single("image"),userController.updateUser);
+router.put("/modifier/:id",protect,authorize(["admin","Parent","BabySitter"]),upload.single("image"),userController.updateUser);
 
-router.get("/:id", userController.getUserById);
+router.get("/:id", protect,authorize(["admin","Parent","BabySitter"]),userController.getUserById);
 
 module.exports = router;

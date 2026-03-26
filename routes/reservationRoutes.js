@@ -9,13 +9,13 @@ const mongoose = require("mongoose");
 
 
 // ajouter réservation
-router.post("/ajouter",reservationController.ajouterReservation);
+router.post("/ajouter",protect,authorize(["Parent"]),reservationController.ajouterReservation);
 
 // lister réservations
-router.get("/",reservationController.listerReservations);
+router.get("/",protect,authorize(["Parent"]),reservationController.listerReservations);
 
 // Modifier une réservation par id
-router.put("/modifier/:id",protect,reservationController.modifierReservation);
+router.put("/modifier/:id",protect,authorize(["Parent"]),reservationController.modifierReservation);
 
 // Supprimer une réservation par id
 router.delete("/supprimer/:id",protect,authorize(["Admin","Parent"]),reservationController.supprimerReservation);

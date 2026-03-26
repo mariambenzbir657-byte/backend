@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Message = require("../models/Message");
 
-// جلب الرسائل بين parent و babysitter
 exports.getMessages = async (req, res) => {
   try {
     const { parentId, babysitterId } = req.params;
@@ -28,7 +27,6 @@ exports.getMessages = async (req, res) => {
   }
 };
 
-// إرسال رسالة جديدة
 exports.sendMessage = async (req, res) => {
   try {
     const { parentId, babysitterId, content, senderRole } = req.body;

@@ -11,7 +11,7 @@ exports.ajouterReservation = async (req, res) => {
       dateHeureDebut,
       dateHeureFin,
       statut,
-      enfant // 🔥 object جاي من frontend
+      enfant 
     } = req.body;
 
     // ✅ 1. إنشاء enfant
@@ -23,7 +23,6 @@ exports.ajouterReservation = async (req, res) => {
       parentId
     });
 
-    // ✅ 2. إنشاء réservation وربطها بالطفل
     const reservation = await Reservation.create({
       parentId,
       babySitterId,
