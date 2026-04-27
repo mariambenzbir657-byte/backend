@@ -56,7 +56,7 @@ exports.getPaiementById = async (req, res) => {
     const paiement = await Paiement.findById(req.params.id);
 
     if (!paiement) {
-      return res.status(404).json({ message: "Paiement non trouvé" });
+      return res.json(null);    
     }
 
     res.status(200).json(paiement);
@@ -70,7 +70,6 @@ exports.getPaiementById = async (req, res) => {
 };
 
 
-// ✅ GET paiement par reservationId
 exports.getPaiementByReservation = async (req, res) => {
   try {
     const reservationId = req.params.id;
@@ -79,19 +78,18 @@ exports.getPaiementByReservation = async (req, res) => {
       return res.status(400).json({ message: "reservationId invalide" });
     }
 
-    const paiement = await Paiement.findOne({
-      reservationId: new mongoose.Types.ObjectId(reservationId),
-    });
+    const paiement = await Paiement.findOne({ reservationId });
 
+    // ✅ IMPORTANT: ne pas retourner 404
     if (!paiement) {
-      return res.status(404).json({ message: "Paiement non trouvé" });
+      return res.status(200).json(null);
     }
 
-    res.status(200).json(paiement);
+    return res.status(200).json(paiement);
 
   } catch (error) {
     console.error("Erreur getPaiementByReservation:", error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Erreur serveur",
       error: error.message,
     });

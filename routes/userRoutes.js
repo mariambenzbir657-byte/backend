@@ -11,7 +11,7 @@ router.post("/ajouter",upload.single("image"),protect,authorize(["Parent","BabyS
 router.post("/login", protect,authorize(["Parent","BabySitter"]),userController.login);
 
 // 🔹 LIST USERS (protected admin)
-router.get("/", protect,authorize(["admin","Parent","BabySitter"]),userController.listerUtilisateurs);
+router.get("/",userController.listerUtilisateurs);
 
 // 🔹 DELETE USER (protected admin)
 router.delete("/:id",protect, authorize(["admin","Parent","BabySitter"]),userController.deleteUser);
@@ -19,6 +19,6 @@ router.delete("/:id",protect, authorize(["admin","Parent","BabySitter"]),userCon
 // 🔹 UPDATE USER (protected admin ou owner)
 router.put("/modifier/:id",protect,authorize(["admin","Parent","BabySitter"]),upload.single("image"),userController.updateUser);
 
-router.get("/:id", protect,authorize(["admin","Parent","BabySitter"]),userController.getUserById);
+router.get("/:id",userController.getUserById);
 
 module.exports = router;

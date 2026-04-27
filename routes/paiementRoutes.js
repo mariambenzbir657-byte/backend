@@ -11,10 +11,10 @@ router.post("/ajouter",protect,authorize(["Parent"]), paiementController.ajouter
 router.get("/",protect,authorize(["Parent"]), paiementController.listerPaiements);
 
 // ✅ by paiementId
-router.get("/by-id/:id",protect,authorize(["Parent"]), paiementController.getPaiementById);
+router.get("/by-id/:id", paiementController.getPaiementById);
 
 // ✅ by reservationId
-router.get("/by-reservation/:id", protect,authorize(["Parent"]),paiementController.getPaiementByReservation);
+router.get("/by-reservation/:id",paiementController.getPaiementByReservation);
 
 // ✏️ modifier
 router.put("/modifier/:id", protect,authorize(["Parent"]), paiementController.modifierPaiement);
